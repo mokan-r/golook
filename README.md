@@ -1,1 +1,1 @@
-# golook
+![logo](misc/images/golook.svg)
