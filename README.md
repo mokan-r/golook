@@ -2,71 +2,16 @@
 
 # Description
 
-Pass
-
-# TODO
-
-- [ ] Write proper tests
-- [ ] Better logging
-
-# Requirements
-
-- Migrate tool
-```bash
-```
-
-# Task
-
-Problem
-
-When writing code, there is often a need to perform certain actions immediately upon saving files. Depending on the situation, this could include:
-
-- Building and running an application
-- Running tests
-- Building an application and deploying it to a server
-- Running linters
-
-Task
-
-Implement a console application that allows you to:
-
-- Monitor changes in various directories
-- Execute an arbitrary set of console commands
-
-Basic Requirements:
-
-- It should be possible to specify a single directory to monitor.
-- The application should be configurable via a configuration file, for example:
-
+This tool monitors directories and executes commands when files in these directories changes.
+Directories to be monitored and commands to be executed must be provided in the config in this format:
 ```
 - path: /home/user/project1
   commands:
     - go build -o ./build/bin/app1 cmd/service/main.go
     - go run ./build/bin/app1
 ```
-    
-When changes are detected in /home/user/project1, the application should build and run the specified commands.
-If one of the commands fails, the subsequent commands should not be executed.
-History of file changes and command executions should be stored in a database.
-When the application is stopped, all commands should be stopped as well, and some text (e.g. "finished") should be displayed.
-
-Additional Features
-
-It should be possible to monitor multiple directories, for example:
-
-```
-- path: /home/user/project1
-  commands:
-    - go build -o ./build/bin/app1 cmd/service/main.go
-    - go run ./build/bin/app1
-- path: /home/user/project2
-  commands:
-    - go test ./...
-```
-
-When changes are detected in /home/user/project1, the application should build and run the specified commands. When changes are detected in /home/user/project2, tests should be run.
-
-It should be possible to enable/disable files based on a regular expression, for example:
+When changing files with documentation or tests, you do not want to restart the application.
+So it's possible to enable/disable files based on a regular expression, for example:
 ```
 - path: /home/user/project2
   include_regexp:
@@ -75,21 +20,26 @@ It should be possible to enable/disable files based on a regular expression, for
       exclude_regexp:
     - .*._test.go$
 ```
-It should be possible to specify a log file where logs from command execution will be sent, for example:
+
+
+It's also possible to specify a log file where logs from command execution will be sent, for example:
 
 ```
 - path: /home/user/project2
   log_file: /tmp/log2.out
 ```
 
-Code Requirements
+# TODO
 
-- Development language: Go
-- Any libraries can be used.
-- Relational database: PostgreSQL
-- The code should be hosted on GitHub with a README file containing instructions for running the application and examples. It should be possible to follow the instructions and have the code working.
-- If there are any questions about the requirements, the candidate can make decisions on their own. It is desirable to reflect in the README what questions were asked and what decisions were made.
+- [ ] Write proper tests
+- [ ] Better logging
+- [ ] Write proper requirements for running application
 
+# Requirements
+
+- Migrate tool
+```bash
+```
 
 # Project structure
 
@@ -115,6 +65,10 @@ golook/
 │   └── 001_init_schema.down.sql
 ├── pkg/
 │   └── db/
+│       ├── models/
+│       │   └── commands.go
+│       ├── postgresql/
+│       │   └── postgresql.go
 │       ├── db.go
 │       └── db_test.go
 ├── docker-compose.yml
@@ -126,10 +80,12 @@ golook/
 
 Table monitored_directories:
 
-| Column Name | Data Type | Description                                             |
-|-------------|-----------|---------------------------------------------------------|
-| id          | serial    | Unique identifier for the monitored directory           |
-| path        | text      | Absolute path to the monitored directory                |
-| log_file    | text      | Absolute path to the log file                           |
-| created_at  | timestamp | Timestamp of the creation of the monitored directory    |
-| updated_at  | timestamp | Timestamp of the last update of the monitored directory |
+| Column Name      | Data Type | Description                                                        |
+|------------------|-----------|--------------------------------------------------------------------|
+| id               | serial    | Unique identifier for the monitored directory                      |
+| path             | text      | Absolute path to the monitored directory                           |
+| changed_file     | text      | Absolute path to the changed file that triggered command execution |
+| executed_command | text      | Command that have been executed                                    |
+| exit_code        | int       | Exit code of the command execution                                 |
+| created_at       | timestamp | Timestamp of the start of the command execution                    |
+| updated_at       | timestamp | Timestamp of the end of the command execution                      |
