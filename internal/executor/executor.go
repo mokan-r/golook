@@ -57,15 +57,13 @@ func (ce *CommandsExecutor) runCommands(event monitor.EventTrigger, commandsChan
 		startTime := time.Now()
 		err := cmd.Run()
 		endTime := time.Now()
-		if errStream.String() != "" {
-			ce.Logger.Error(ce.Config.Directories[event.Path].LogFile, errStream.String())
-		}
-		if err != nil {
-			ce.Logger.Error(ce.Config.Directories[event.Path].LogFile, err.Error())
+		if ce.Config.Directories[event.Path].LogFile != "" {
+			err = ce.logCommands(errStream.String(), outStream.String(), err, ce.Config.Directories[event.Path].LogFile)
+			if err != nil {
+				break
+			}
+		} else if err != nil {
 			break
-		}
-		if outStream.String() != "" {
-			ce.Logger.Info(ce.Config.Directories[event.Path].LogFile, outStream.String())
 		}
 		commandsChan <- models.Commands{
 			Path:            event.Path,
@@ -76,4 +74,18 @@ func (ce *CommandsExecutor) runCommands(event monitor.EventTrigger, commandsChan
 			ExitCode:        cmd.ProcessState.ExitCode(),
 		}
 	}
+}
+
+func (ce *CommandsExecutor) logCommands(errString string, outString string, err error, logFile string) error {
+	if errString != "" {
+		ce.Logger.Error(logFile, errString)
+	}
+	if err != nil {
+		ce.Logger.Error(logFile, err.Error())
+		return err
+	}
+	if outString != "" {
+		ce.Logger.Info(logFile, outString)
+	}
+	return nil
 }
