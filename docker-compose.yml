@@ -9,3 +9,6 @@ services:
       POSTGRES_DB: golook
       POSTGRES_USER: golook
       POSTGRES_PASSWORD: password
+    volumes:
+      - ./db:/var/lib/postgresql/data
+      - ./migrations/init_schema.sql:/docker-entrypoint-initdb.d/create_tables.sql
