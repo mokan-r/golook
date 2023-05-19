@@ -91,18 +91,20 @@ golook/
 │   └── logger/
 │       └── logger.go
 ├── migrations/
-│   ├── 001_init_schema.up.sql
-│   └── 001_init_schema.down.sql
+│   └── init_schema.sql
 ├── pkg/
 │   └── db/
 │       ├── models/
 │       │   └── commands.go
 │       ├── postgresql/
 │       │   └── postgresql.go
-│       ├── db.go
-│       └── db_test.go
+│       └── db.go
+├── misc/
+│   └── images/
+│       └── golook.svg
 ├── docker-compose.yml
 ├── go.mod
+├── Makefile
 └── README.md
 ```
 
