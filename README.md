@@ -8,7 +8,6 @@
 <!-- TOC -->
 
 # Description
-_________________
 
 This tool monitors directories and executes commands when files in these directories changes.
 It's also works with regexp that you provide to exclude or include files to be monitored.
@@ -16,14 +15,12 @@ You can also provide path to a log file, to store logs from commands executions.
 All info stores in PostgreSQL database (see [Database schema](#database-schema) for more info)
 
 # Requirements
-_________________
 
 - [go1.20.2](https://pkg.go.dev/github.com/SunJary/dl/go1.20.2)
 - [docker v20.10.23](https://docs.docker.com/engine/install/)
 - [docker-compose v2.15.1](https://docs.docker.com/compose/install/linux/)
 
 # Usage
-_________________
 
 First, you need to write a config file that provides
 directories to be monitored and commands to be executed in this format:
@@ -75,7 +72,6 @@ Then you can use golook as follows:
 ```
 
 # Project structure
-_________________
 
 ```
 golook/
@@ -111,7 +107,6 @@ golook/
 ```
 
 # Database schema
-_________________
 
 Table commands:
 
