@@ -1,7 +1,0 @@
-- path: /home/user/project1
-  commands:
-    - go build -o ./build/bin/app1 cmd/service/main.go
-    - go run ./build/bin/app1
-- path: /home/user/project2
-  commands:
-    - go test ./...
